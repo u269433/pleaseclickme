@@ -24,79 +24,114 @@ body {
 }
 
 .container {
-  width: 90%;
+  width: 100%;
+  position: relative;
 }
 
 h1 {
-  font-size: 2.6rem;
+  font-size: 2.5rem;
   color: white;
-  margin-bottom: 60px;
+  margin-bottom: 80px;
   line-height: 1.4;
 }
 
-/* ❤️ HEART BUTTON SHAPE */
-.heart-btn {
+/* ❤️ HEART BASE */
+.heart {
   position: absolute;
-  width: 120px;
-  height: 110px;
-  background: red;
+  width: 100px;
+  height: 100px;
   transform: rotate(-45deg);
   cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.heart-btn::before,
-.heart-btn::after {
+.heart::before,
+.heart::after {
   content: "";
-  width: 120px;
-  height: 110px;
-  background: inherit;
-  border-radius: 50%;
   position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: inherit;
 }
 
-.heart-btn::before {
-  top: -60px;
+.heart::before {
+  top: -50px;
   left: 0;
 }
 
-.heart-btn::after {
-  left: 60px;
+.heart::after {
+  left: 50px;
   top: 0;
 }
 
-.heart-text {
+.text {
   position: absolute;
   transform: rotate(45deg);
   color: white;
   font-weight: bold;
-  font-size: 1.2rem;
-  z-index: 2;
+  font-size: 1.1rem;
+  width: 100%;
+  text-align: center;
+  top: 35%;
 }
 
-/* YES */
+/* YES HEART */
 #yes {
-  left: 35%;
   background: #00c853;
+  left: 40%;
+  top: 60%;
 }
 
-/* NO (broken heart) */
+/* BROKEN HEART (two halves) */
 #no {
   left: 55%;
+  top: 60%;
+  position: absolute;
+}
+
+/* left half */
+#no .left,
+#no .right {
+  position: absolute;
+  width: 50px;
+  height: 100px;
+  background: #ff1744;
+  transform: rotate(-45deg);
+}
+
+#no .left::before,
+#no .left::after,
+#no .right::before,
+#no .right::after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   background: #ff1744;
 }
 
-/* broken effect */
-#no::after {
-  background: #ff1744;
-  clip-path: polygon(0 0, 50% 0, 30% 100%, 0 100%);
+#no .left::before { top: -25px; left: 0; }
+#no .left::after  { top: 0; left: 25px; }
+
+#no .right::before { top: -25px; left: 0; }
+#no .right::after  { top: 0; left: 25px; }
+
+#no .left {
+  left: 0;
+  clip-path: polygon(0 0, 100% 0, 60% 100%, 0 100%);
 }
 
-#no::before {
-  background: #ff1744;
-  clip-path: polygon(50% 0, 100% 0, 100% 100%, 70% 100%);
+#no .right {
+  left: 50px;
+  clip-path: polygon(40% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* text inside */
+#no .text {
+  width: 100px;
+  left: 0;
+  transform: rotate(45deg);
 }
 
 </style>
@@ -105,6 +140,7 @@ h1 {
 <body>
 
 <div class="container">
+
   <h1>
     In the game of life, I may be just a king—slow and limited…<br>
     but with you by my side, I become unstoppable.<br><br>
@@ -112,13 +148,15 @@ h1 {
   </h1>
 
   <!-- YES -->
-  <div id="yes" class="heart-btn">
-    <div class="heart-text">YES</div>
+  <div id="yes" class="heart">
+    <div class="text">YES</div>
   </div>
 
-  <!-- NO -->
-  <div id="no" class="heart-btn">
-    <div class="heart-text">NO</div>
+  <!-- NO (broken heart) -->
+  <div id="no">
+    <div class="left"></div>
+    <div class="right"></div>
+    <div class="text">NO</div>
   </div>
 
 </div>
@@ -126,25 +164,17 @@ h1 {
 <script>
 const noBtn = document.getElementById("no");
 
-// Move slightly away (10–15px)
 document.addEventListener("mousemove", (e) => {
   const rect = noBtn.getBoundingClientRect();
 
   const dx = e.clientX - (rect.left + rect.width / 2);
   const dy = e.clientY - (rect.top + rect.height / 2);
+  const distance = Math.sqrt(dx*dx + dy*dy);
 
-  const distance = Math.sqrt(dx * dx + dy * dy);
-
-  if (distance < 100) {
-    const moveX = (dx > 0 ? -1 : 1) * (10 + Math.random() * 5);
-    const moveY = (dy > 0 ? -1 : 1) * (10 + Math.random() * 5);
-
-    let newX = rect.left + moveX;
-    let newY = rect.top + moveY;
-
-    // keep inside screen
-    newX = Math.max(0, Math.min(window.innerWidth - rect.width, newX));
-    newY = Math.max(0, Math.min(window.innerHeight - rect.height, newY));
+  if (distance < 120) {
+    // move anywhere on screen randomly
+    const newX = Math.random() * (window.innerWidth - rect.width);
+    const newY = Math.random() * (window.innerHeight - rect.height);
 
     noBtn.style.left = newX + "px";
     noBtn.style.top = newY + "px";
