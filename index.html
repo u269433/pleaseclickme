@@ -9,7 +9,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -25,95 +25,93 @@ body {
 
 .container {
   width: 90%;
+  max-width: 800px;
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   color: white;
   margin-bottom: 40px;
   line-height: 1.4;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
 #taunt {
-  color: white;
+  color: #fff;
   margin-bottom: 20px;
-  font-size: 1.2rem;
-  min-height: 30px;
+  font-size: 1.3rem;
+  font-style: italic;
+  min-height: 35px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .buttons {
   position: relative;
-  height: 200px;
+  height: 150px;
 }
 
-/* NORMAL BUTTON STYLE */
 button {
-  padding: 15px 30px;
+  padding: 15px 35px;
   font-size: 1.2rem;
   border: none;
-  border-radius: 30px;
+  border-radius: 50px;
   cursor: pointer;
-  position: fixed; /* Changed to fixed for easier screen-wide dodging */
-  transition: all 0.1s ease; /* Smooths the 8-10px jitter */
+  font-weight: bold;
+  transition: transform 0.1s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-/* YES */
 #yes {
-  left: 40%;
-  top: 60%;
-  transform: translateX(-50%);
-  background: #00ff88;
+  background: #ffffff;
+  color: #ff4d6d;
 }
 
-/* NO */
 #no {
-  left: 60%;
-  top: 60%;
-  transform: translateX(-50%);
   background: #ff4d6d;
   color: white;
-  z-index: 999;
+  position: absolute;
+  /* Initial position */
+  left: 60%; 
+  z-index: 10;
 }
 
-/* Fake screen */
 #fakeScreen {
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   width: 100vw;
-  background: black;
-  color: pink;
+  background: rgba(0, 0, 0, 0.95);
+  color: #ff9a9e;
   display: none;
   justify-content: center;
   align-items: center;
-  font-size: 2rem;
+  font-size: 2.2rem;
   flex-direction: column;
-  z-index: 1000;
+  z-index: 9999;
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
   <h1>
     In the game of life, I may be just a king—slow and limited…<br>
     but with you by my side, I become unstoppable.<br><br>
-    Will you be my queen? 👑♟️
+    Will you be my queen? 👑
   </h1>
 
-  <div id="taunt"></div>
+  <div id="taunt">Try to say no... if you can catch it. 😉</div>
 
   <div class="buttons">
-    <button id="yes">❤️ Yes</button>
+    <button id="yes">❤️ Yes, Always</button>
     <button id="no">💔 No</button>
   </div>
 </div>
 
 <div id="fakeScreen">
   <div>💖 Awww! You said Yes Sweetheart! 💖</div>
-  <div style="font-size:1rem;margin-top:20px;">Loading...</div>
+  <div style="font-size:1.2rem; margin-top:20px; color: white;">Finalizing our fairy tale...</div>
 </div>
 
 <script>
@@ -121,62 +119,56 @@ const noBtn = document.getElementById("no");
 const taunt = document.getElementById("taunt");
 
 const taunts = [
-  "Why are you clicking me? 😏",
-  "Bro choose YES 😂",
-  "You can't catch me!",
-  "Scared of commitment? 👀",
-  "Just press YES already 😭"
+  "Nice try, Your Majesty! 😘",
+  "A Queen belongs by her King's side... ♟️",
+  "The 'No' button is shy today! ✨",
+  "You're chasing the wrong heart, look left! ❤️",
+  "I've made it impossible to lose you. 😉",
+  "Focus on the 'Yes', darling! 👑",
+  "Catch me if you can, beautiful! 🏃‍♀️"
 ];
 
-// Dodge Logic
-document.addEventListener("mousemove", (e) => {
-  const x = e.clientX;
-  const y = e.clientY;
-  const rect = noBtn.getBoundingClientRect();
-  
-  // Calculate center of button
-  const buttonCenterX = rect.left + rect.width / 2;
-  const buttonCenterY = rect.top + rect.height / 2;
+function moveButton() {
+    // Generate a random jump between 80 and 150 pixels
+    // This makes it "jump" far enough that they can't click it
+    const jumpDist = 120; 
+    
+    // Get container boundaries to keep the button inside the visible area
+    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
 
-  // Calculate distance between cursor and button center
-  const distance = Math.sqrt(Math.pow(x - buttonCenterX, 2) + Math.pow(y - buttonCenterY, 2));
+    // Calculate new random position
+    let newX = Math.random() * maxX;
+    let newY = Math.random() * maxY;
 
-  // If cursor is within 80px, move the button 8-10px away
-  if (distance < 80) {
-    taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
-
-    const angle = Math.atan2(buttonCenterY - y, buttonCenterX - x);
-    const moveDist = 8 + Math.random() * 2; // 8-10 pixels move
-
-    let newX = rect.left + Math.cos(angle) * moveDist;
-    let newY = rect.top + Math.sin(angle) * moveDist;
-
-    // Keep inside screen boundaries
-    const padding = 20;
-    if (newX < padding) newX = padding + 50;
-    if (newX > window.innerWidth - rect.width - padding) newX = window.innerWidth - rect.width - 70;
-    if (newY < padding) newY = padding + 50;
-    if (newY > window.innerHeight - rect.height - padding) newY = window.innerHeight - rect.height - 70;
-
+    // Update position
+    noBtn.style.position = 'fixed';
     noBtn.style.left = newX + "px";
     noBtn.style.top = newY + "px";
-  }
+
+    // Update taunt text
+    taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
+}
+
+// Triggers when the mouse even starts to enter the button area
+noBtn.addEventListener("mouseover", moveButton);
+noBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // Prevents mobile tapping
+    moveButton();
 });
 
-// Extra safety: prevent click and move away on click attempt
+// Final safety check - even if they manage to click, it won't work
 noBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  alert("Nice try! But you have to say Yes! 😉");
+    e.preventDefault();
+    moveButton();
 });
 
-// YES click
+// YES click logic
 document.getElementById("yes").onclick = () => {
   document.getElementById("fakeScreen").style.display = "flex";
-
   setTimeout(() => {
-    // Redirects to a romantic song or your specific link
     window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-  }, 2500);
+  }, 3000);
 };
 </script>
 
