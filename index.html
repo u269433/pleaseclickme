@@ -1,169 +1,175 @@
 <!DOCTYPE html> 
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Special Message</title>
+<meta charset="UTF-8">
+<title>Special Message</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
 
-    body {
-      height: 100vh;
-      width: 100vw;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      overflow: hidden;
-      transition: transform 0.1s;
-    }
+body {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  transition: transform 0.15s;
+}
 
-    .container {
-      width: 90%;
-    }
+.container {
+  width: 90%;
+}
 
-    h1 {
-      font-size: 2.5rem;
-      color: white;
-      margin-bottom: 40px;
-      line-height: 1.4;
-    }
+h1 {
+  font-size: 2.5rem;
+  color: white;
+  margin-bottom: 40px;
+  line-height: 1.4;
+}
 
-    #taunt {
-      color: white;
-      margin-bottom: 20px;
-      font-size: 1.2rem;
-      min-height: 30px;
-    }
+#taunt {
+  color: white;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  min-height: 30px;
+}
 
-    .buttons {
-      position: relative;
-      height: 200px;
-    }
+.buttons {
+  position: relative;
+  height: 200px;
+}
 
-    button {
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      position: absolute;
-      transition: 0.2s ease;
-    }
+button {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  position: absolute;
+  transition: 0.25s ease;
+}
 
-    #yes {
-      left: 35%;
-      background: #00ff88;
-    }
+#yes {
+  left: 35%;
+  background: #00ff88;
+}
 
-    #no {
-      left: 55%;
-      background: #ff4d6d;
-      color: white;
-    }
+#no {
+  left: 55%;
+  background: #ff4d6d;
+  color: white;
+}
 
-    #fakeScreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
-      background: black;
-      color: lime;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-      flex-direction: column;
-    }
-  </style>
+/* Fake screen */
+#fakeScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: black;
+  color: pink;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  flex-direction: column;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h1>
-      In the game of life, I may be just a king—slow and limited…<br>
-      but with you by my side, I become unstoppable.<br><br>
-      Will you be my queen? 👑♟️
-    </h1>
+<div class="container">
+  <h1>
+    In the game of life, I may be just a king—slow and limited…<br>
+    but with you by my side, I become unstoppable.<br><br>
+    Will you be my queen? 👑♟️
+  </h1>
 
-    <div id="taunt"></div>
+  <div id="taunt"></div>
 
-    <div class="buttons">
-      <button id="yes">❤️ Yes</button>
-      <button id="no">💔 No</button>
-    </div>
+  <div class="buttons">
+    <button id="yes">❤️ Yes</button>
+    <button id="no">💔 No</button>
   </div>
+</div>
 
-  <div id="fakeScreen">
-    <div>💖 You said YES 💖</div>
-    <div style="font-size:1rem;margin-top:20px;">Loading...</div>
-  </div>
+<div id="fakeScreen">
+  <div>💖 Aww! you said yes Sweetheart 💖</div>
+  <div style="font-size:1rem;margin-top:20px;">Loading...</div>
+</div>
 
-  <script>
-    const noBtn = document.getElementById("no");
-    const taunt = document.getElementById("taunt");
-    const body = document.body;
+<script>
+const noBtn = document.getElementById("no");
+const taunt = document.getElementById("taunt");
+const body = document.body;
 
-    const taunts = [
-      "Why are you clicking me? 😏",
-      "Bro choose YES 😂",
-      "Stop it, you can't catch me!",
-      "Are you scared of commitment? 👀",
-      "Just press YES already 😭"
-    ];
+const taunts = [
+  "Why are you clicking me? 😏",
+  "Bro choose YES 😂",
+  "You can't catch me!",
+  "Scared of commitment? 👀",
+  "Just press YES already 😭"
+];
 
-    document.addEventListener("mousemove", (e) => {
-      const rect = noBtn.getBoundingClientRect();
+document.addEventListener("mousemove", (e) => {
+  const rect = noBtn.getBoundingClientRect();
 
-      const dx = e.clientX - (rect.left + rect.width / 2);
-      const dy = e.clientY - (rect.top + rect.height / 2);
-      const distance = Math.sqrt(dx*dx + dy*dy);
+  const dx = e.clientX - (rect.left + rect.width / 2);
+  const dy = e.clientY - (rect.top + rect.height / 2);
+  const distance = Math.sqrt(dx*dx + dy*dy);
 
-      if (distance < 100) {
-        // taunt
-        taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
+  if (distance < 100) {
+    // taunt
+    taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
 
-        // very small shake
-        body.style.transform = `translate(${Math.random()*4-2}px, ${Math.random()*4-2}px)`;
+    // mild shake
+    body.style.transform = `translate(${Math.random()*6-3}px, ${Math.random()*6-3}px)`;
 
-        // move slightly (10–20px only)
-        let moveX = (Math.random() - 0.5) * 30;
-        let moveY = (Math.random() - 0.5) * 30;
+    // SMALL controlled dodge (10–20px)
+    let moveX = (dx > 0 ? -1 : 1) * (10 + Math.random()*10);
+    let moveY = (dy > 0 ? -1 : 1) * (10 + Math.random()*10);
 
-        let newX = rect.left + moveX;
-        let newY = rect.top + moveY;
+    let newX = rect.left + moveX;
+    let newY = rect.top + moveY;
 
-        // keep inside screen
-        newX = Math.max(0, Math.min(window.innerWidth - rect.width, newX));
-        newY = Math.max(0, Math.min(window.innerHeight - rect.height, newY));
+    // keep inside screen
+    newX = Math.max(0, Math.min(window.innerWidth - rect.width, newX));
+    newY = Math.max(0, Math.min(window.innerHeight - rect.height, newY));
 
-        noBtn.style.left = newX + "px";
-        noBtn.style.top = newY + "px";
-      } else {
-        body.style.transform = "translate(0,0)";
-      }
-    });
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
+  } else {
+    body.style.transform = "translate(0,0)";
+  }
+});
 
-    document.getElementById("yes").onclick = () => {
-      let count = localStorage.getItem("rickrollCount") || 0;
-      count++;
-      localStorage.setItem("rickrollCount", count);
+// YES click
+document.getElementById("yes").onclick = () => {
+  // ONLY YES COUNTER
+  let count = localStorage.getItem("yesClicks") || 0;
+  count++;
+  localStorage.setItem("yesClicks", count);
 
-      document.getElementById("fakeScreen").style.display = "flex";
+  console.log("YES clicked:", count);
 
-      setTimeout(() => {
-        window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-      }, 2500);
-    };
-  </script>
+  // fake screen
+  document.getElementById("fakeScreen").style.display = "flex";
+
+  setTimeout(() => {
+    window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+  }, 2500);
+};
+</script>
 
 </body>
 </html>
