@@ -21,11 +21,11 @@ body {
   align-items: center;
   text-align: center;
   overflow: hidden;
-  transition: transform 0.15s;
 }
 
 .container {
   width: 90%;
+  position: relative;
 }
 
 h1 {
@@ -47,23 +47,26 @@ h1 {
   height: 200px;
 }
 
+/* IMPORTANT: fixed positioning prevents glitch */
 button {
   padding: 15px 30px;
   font-size: 1.2rem;
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  position: absolute;
-  transition: 0.25s ease;
+  position: fixed;
+  transition: 0.15s linear;
 }
 
 #yes {
   left: 35%;
+  top: 65%;
   background: #00ff88;
 }
 
 #no {
   left: 55%;
+  top: 65%;
   background: #ff4d6d;
   color: white;
 }
@@ -96,11 +99,11 @@ button {
   </h1>
 
   <div id="taunt"></div>
+</div>
 
-  <div class="buttons">
-    <button id="yes">❤️ Yes</button>
-    <button id="no">💔 No</button>
-  </div>
+<div class="buttons">
+  <button id="yes">❤️ Yes</button>
+  <button id="no">💔 No</button>
 </div>
 
 <div id="fakeScreen">
@@ -111,7 +114,6 @@ button {
 <script>
 const noBtn = document.getElementById("no");
 const taunt = document.getElementById("taunt");
-const body = document.body;
 
 const taunts = [
   "Why are you clicking me? 😏",
@@ -121,37 +123,27 @@ const taunts = [
   "Just press YES already 😭"
 ];
 
-// SUPER CONTROLLED MOVEMENT (2–3px ONLY)
-document.addEventListener("mousemove", (e) => {
+// DODGE ONLY WHEN CLICK ATTEMPTED
+noBtn.addEventListener("mousedown", (e) => {
+  e.preventDefault();
+
+  taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
+
   const rect = noBtn.getBoundingClientRect();
 
-  const dx = e.clientX - (rect.left + rect.width / 2);
-  const dy = e.clientY - (rect.top + rect.height / 2);
-  const distance = Math.sqrt(dx*dx + dy*dy);
+  // move ONLY 2–3px randomly
+  let moveX = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random());
+  let moveY = (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random());
 
-  if (distance < 80) {
-    // taunt
-    taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
+  let newX = rect.left + moveX;
+  let newY = rect.top + moveY;
 
-    // small shake
-    body.style.transform = `translate(${Math.random()*4-2}px, ${Math.random()*4-2}px)`;
+  // keep inside screen
+  newX = Math.max(0, Math.min(window.innerWidth - rect.width, newX));
+  newY = Math.max(0, Math.min(window.innerHeight - rect.height, newY));
 
-    // move VERY LITTLE (2–3px)
-    let moveX = (dx > 0 ? -1 : 1) * (2 + Math.random()*1);
-    let moveY = (dy > 0 ? -1 : 1) * (2 + Math.random()*1);
-
-    let newX = rect.left + moveX;
-    let newY = rect.top + moveY;
-
-    // keep inside screen
-    newX = Math.max(0, Math.min(window.innerWidth - rect.width, newX));
-    newY = Math.max(0, Math.min(window.innerHeight - rect.height, newY));
-
-    noBtn.style.left = newX + "px";
-    noBtn.style.top = newY + "px";
-  } else {
-    body.style.transform = "translate(0,0)";
-  }
+  noBtn.style.left = newX + "px";
+  noBtn.style.top = newY + "px";
 });
 
 // YES click
