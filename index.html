@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Message</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #111;
+      color: white;
+      margin-top: 100px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>I made this to propose to a girl...</h1>
+<p>Can you check if this looks okay? 😭</p>
+
+<button onclick="start()">Click to see</button>
+
+<script>
+function start() {
+  document.body.innerHTML = "<h2>Preparing message...</h2>";
+  
+  setTimeout(() => {
+    window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+  }, 3000);
+}
+</script>
+
+</body>
+</html>
