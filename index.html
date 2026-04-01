@@ -53,22 +53,26 @@ button {
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  position: absolute;
+  position: fixed; /* Changed to fixed for easier screen-wide dodging */
+  transition: all 0.1s ease; /* Smooths the 8-10px jitter */
 }
 
 /* YES */
 #yes {
-  left: 35%;
-  top: 50px;
+  left: 40%;
+  top: 60%;
+  transform: translateX(-50%);
   background: #00ff88;
 }
 
 /* NO */
 #no {
-  left: 55%;
-  top: 50px;
+  left: 60%;
+  top: 60%;
+  transform: translateX(-50%);
   background: #ff4d6d;
   color: white;
+  z-index: 999;
 }
 
 /* Fake screen */
@@ -85,6 +89,7 @@ button {
   align-items: center;
   font-size: 2rem;
   flex-direction: column;
+  z-index: 1000;
 }
 </style>
 </head>
@@ -123,45 +128,53 @@ const taunts = [
   "Just press YES already 😭"
 ];
 
-// MOVE ONLY ON HOVER (not distance based)
-noBtn.addEventListener("mouseenter", () => {
-
-  // taunt update
-  taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
-
+// Dodge Logic
+document.addEventListener("mousemove", (e) => {
+  const x = e.clientX;
+  const y = e.clientY;
   const rect = noBtn.getBoundingClientRect();
+  
+  // Calculate center of button
+  const buttonCenterX = rect.left + rect.width / 2;
+  const buttonCenterY = rect.top + rect.height / 2;
 
-  // small controlled move (8–10px)
-  let moveX = (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random()*2);
-  let moveY = (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random()*2);
+  // Calculate distance between cursor and button center
+  const distance = Math.sqrt(Math.pow(x - buttonCenterX, 2) + Math.pow(y - buttonCenterY, 2));
 
-  let newX = rect.left + moveX;
-  let newY = rect.top + moveY;
+  // If cursor is within 80px, move the button 8-10px away
+  if (distance < 80) {
+    taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
 
-  // keep inside screen
-  newX = Math.max(0, Math.min(window.innerWidth - rect.width, newX));
-  newY = Math.max(0, Math.min(window.innerHeight - rect.height, newY));
+    const angle = Math.atan2(buttonCenterY - y, buttonCenterX - x);
+    const moveDist = 8 + Math.random() * 2; // 8-10 pixels move
 
-  noBtn.style.left = newX + "px";
-  noBtn.style.top = newY + "px";
+    let newX = rect.left + Math.cos(angle) * moveDist;
+    let newY = rect.top + Math.sin(angle) * moveDist;
+
+    // Keep inside screen boundaries
+    const padding = 20;
+    if (newX < padding) newX = padding + 50;
+    if (newX > window.innerWidth - rect.width - padding) newX = window.innerWidth - rect.width - 70;
+    if (newY < padding) newY = padding + 50;
+    if (newY > window.innerHeight - rect.height - padding) newY = window.innerHeight - rect.height - 70;
+
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
+  }
 });
 
-// extra safety: prevent click
+// Extra safety: prevent click and move away on click attempt
 noBtn.addEventListener("click", (e) => {
   e.preventDefault();
+  alert("Nice try! But you have to say Yes! 😉");
 });
 
 // YES click
 document.getElementById("yes").onclick = () => {
-  let count = localStorage.getItem("yesClicks") || 0;
-  count++;
-  localStorage.setItem("yesClicks", count);
-
-  console.log("YES clicked:", count);
-
   document.getElementById("fakeScreen").style.display = "flex";
 
   setTimeout(() => {
+    // Redirects to a romantic song or your specific link
     window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
   }, 2500);
 };
