@@ -29,36 +29,38 @@ body {
 }
 
 h1 {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   color: white;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
   line-height: 1.4;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
 #taunt {
   color: #fff;
-  margin-bottom: 20px;
-  font-size: 1.3rem;
+  margin-bottom: 30px;
+  font-size: 1.4rem;
   font-style: italic;
-  min-height: 35px;
+  min-height: 40px; /* Maintains space even when empty */
   text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .buttons {
+  display: flex;
+  justify-content: center;
+  gap: 50px; /* Increased gap between buttons */
   position: relative;
-  height: 150px;
 }
 
 button {
-  padding: 15px 35px;
-  font-size: 1.2rem;
+  padding: 20px 50px; /* Significantly larger buttons */
+  font-size: 1.5rem;
   border: none;
-  border-radius: 50px;
+  border-radius: 60px;
   cursor: pointer;
   font-weight: bold;
-  transition: transform 0.1s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: transform 0.1s ease, background 0.3s;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
 #yes {
@@ -66,13 +68,16 @@ button {
   color: #ff4d6d;
 }
 
+#yes:hover {
+  background: #fff0f3;
+  transform: scale(1.05);
+}
+
 #no {
   background: #ff4d6d;
   color: white;
-  position: absolute;
-  /* Initial position */
-  left: 60%; 
-  z-index: 10;
+  position: relative; /* Starts in flow, then switches to fixed */
+  z-index: 999;
 }
 
 #fakeScreen {
@@ -86,7 +91,7 @@ button {
   display: none;
   justify-content: center;
   align-items: center;
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   flex-direction: column;
   z-index: 9999;
 }
@@ -101,7 +106,7 @@ button {
     Will you be my queen? 👑
   </h1>
 
-  <div id="taunt">Try to say no... if you can catch it. 😉</div>
+  <div id="taunt"></div>
 
   <div class="buttons">
     <button id="yes">❤️ Yes, Always</button>
@@ -129,35 +134,33 @@ const taunts = [
 ];
 
 function moveButton() {
-    // Generate a random jump between 80 and 150 pixels
-    // This makes it "jump" far enough that they can't click it
-    const jumpDist = 120; 
-    
-    // Get container boundaries to keep the button inside the visible area
-    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+    // Determine screen limits
+    const maxX = window.innerWidth - noBtn.offsetWidth - 30;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 30;
 
-    // Calculate new random position
+    // Generate random positions
     let newX = Math.random() * maxX;
     let newY = Math.random() * maxY;
 
-    // Update position
+    // Apply new positions
     noBtn.style.position = 'fixed';
     noBtn.style.left = newX + "px";
     noBtn.style.top = newY + "px";
 
-    // Update taunt text
+    // Show and update taunt text only when she interacts with 'No'
     taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
 }
 
-// Triggers when the mouse even starts to enter the button area
+// Trigger on hover
 noBtn.addEventListener("mouseover", moveButton);
+
+// Trigger on touch (for phones)
 noBtn.addEventListener("touchstart", (e) => {
-    e.preventDefault(); // Prevents mobile tapping
+    e.preventDefault();
     moveButton();
 });
 
-// Final safety check - even if they manage to click, it won't work
+// Final click prevention
 noBtn.addEventListener("click", (e) => {
     e.preventDefault();
     moveButton();
